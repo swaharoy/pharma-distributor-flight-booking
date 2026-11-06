@@ -1,0 +1,56 @@
+_ > nanoagent.plugin.v0001.ManifestConfig:
+id: pharma-distributor-flight-booking
+name: Pharma Distributor Flight Booking
+version: 0.1.0
+status: ready
+spec: nanoagent.plugin/v0001
+
+runtime > nanoagent.plugin.v0001.RuntimeConfig:
+  type: mcp_stdio
+  command: [uv, run, --frozen, python, -m, plugin]
+
+permissions > nanoagent.plugin.v0001.PermissionsConfig:
+  network > nanoagent.plugin.v0001.NetworkConfig:
+    hosts: []
+  filesystem > nanoagent.plugin.v0001.FilesystemConfig:
+    write: [workspace]
+
+# One entry per contract.Tool; its input and output classes are contract.TOOLS's.
+tools > dict[contract.Tool, nanoagent.plugin.v0001.ToolConfig]:
+  booking_requirements:
+    description: What a booking request must give (traveller, airports, arrival date and window, Senior Vice President approval), with examples, the date and time rules and the airports to choose from
+  get_trip:
+    description: Begin a booking run for a trip request, booked as of today, and show the trip (traveller, route, booking date, arrival date, days ahead, the requested arrival window and the window widened by 90 minutes in UTC, the departure days whose flights can land in it, approval held)
+  search_flights:
+    description: List the one-way flight offers on a route leaving on the searched days (local dates at the origin), with airline, flight numbers, cabin, fare, refundability, change fee and times in UTC and local time (simulated fares and schedules)
+  solve_booking:
+    description: The answer key, never given to the agent - the booking the policy requires for a trip request, as of today
+
+# One entry per contract.Task; its input and output classes are contract.TASKS's.
+tasks > dict[contract.Task, nanoagent.plugin.v0001.TaskConfig]:
+  booking-requirements:
+    description: Show what to tell us to book a flight, and the airports to choose from
+    runner: tool
+    tools: [booking_requirements]
+    reference: null
+    instructions: Call booking_requirements with topic ALL (FIELDS for only what to tell us, AIRPORTS for only the airport list) and show what it returns.
+  search-flights:
+    description: Show the flight offers on a route and days
+    runner: tool
+    tools: [search_flights]
+    reference: null
+    instructions: Call search_flights with an empty run_id, the route's airport codes and the departure days to search (local dates at the origin, today or later, at most 7 days apart), and show the offers it returns.
+  pharma-distributor-flight-booking:
+    description: Book a one-way flight for a traveller's trip request under the pharmaceutical distributor's corporate travel policy
+    runner: agent
+    tools: [get_trip, search_flights]
+    reference: solve_booking
+    instructions: |-
+      Book one one-way flight for a traveller of a pharmaceutical distributor, under its corporate travel policy (based on McKesson's 2006 Corporate Travel Policy, filed with the SEC). You act as the company's designated corporate travel agency. Money is in US cents; segment times are UTC, and the trip states its arrival window in UTC too (offers also show depart_local and arrive_local). Fares and schedules are simulated.
+      Plan: at most three tool calls. (1) get_trip with the task input exactly as given. (2) If the trip's days_ahead is less than 7 and svp_approval is false, go straight to submit (no search is needed). Otherwise call search_flights with the run_id get_trip returned, the trip's origin and destination codes, date_from equal to the trip's search_from and date_to equal to its search_to (every day a flight landing in the window can leave). (3) submit.
+      Rules, in order:
+      M2. svp_approval_required is true exactly when days_ahead is less than 7 (exactly 7 is false). If it is true and svp_approval is false, never book: submit booked false, refusal NO_SVP_APPROVAL.
+      M3. Consider every offer from that search whose last segment's arrive time is from window_earliest to window_latest, both included (compare the UTC times), whatever day it leaves. Connections are fine.
+      M4. Book the offer with the lowest fare_cents among them, whatever its cabin, whether it is refundable and whatever its change_fee_cents (any of them when tied).
+      M5. If no offer passes M3: submit booked false, refusal NO_FLIGHT_IN_WINDOW.
+      Submit: run_id as get_trip returned it; booked; refusal (NONE when booked); offer_id (empty when not booked); svp_approval_required, always, by M2. Reason briefly; do not call any tool after submit.

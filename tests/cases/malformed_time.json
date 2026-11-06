@@ -1,0 +1,34 @@
+{
+ "note": "An arrival time that is not HH:MM is refused.",
+ "kind": "malformed",
+ "task": "pharma-distributor-flight-booking",
+ "today": "2026-11-05",
+ "request": {
+  "traveller_name": "Maya Chen",
+  "origin": "ORD",
+  "destination": "BOS",
+  "arrival_date": "2026-12-03",
+  "arrive_from": "1pm",
+  "arrive_to": "17:00",
+  "svp_approval": false
+ },
+ "steps": [
+  {
+   "tool": "get_trip",
+   "arguments": "$request",
+   "save_as": "trip"
+  },
+  {
+   "submit": {
+    "run_id": "$ref:trip.run_id",
+    "booked": false,
+    "refusal": "NO_FLIGHT_IN_WINDOW",
+    "offer_id": "",
+    "svp_approval_required": false
+   }
+  }
+ ],
+ "expect": {
+  "error_contains": "HH:MM"
+ }
+}

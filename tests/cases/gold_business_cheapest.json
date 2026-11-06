@@ -1,0 +1,47 @@
+{
+ "note": "A business fare is the lowest in the window: cabin does not count, so book it.",
+ "kind": "gold",
+ "task": "pharma-distributor-flight-booking",
+ "today": "2026-11-05",
+ "request": {
+  "traveller_name": "Maya Chen",
+  "origin": "BOS",
+  "destination": "LHR",
+  "arrival_date": "2026-12-13",
+  "arrive_from": "17:00",
+  "arrive_to": "23:00",
+  "svp_approval": false
+ },
+ "steps": [
+  {
+   "tool": "get_trip",
+   "arguments": "$request",
+   "save_as": "trip"
+  },
+  {
+   "tool": "search_flights",
+   "save_as": "search",
+   "arguments": {
+    "run_id": "$ref:trip.run_id",
+    "origin": "$ref:trip.trip.origin.code",
+    "destination": "$ref:trip.trip.destination.code",
+    "date_from": "$ref:trip.trip.search_from",
+    "date_to": "$ref:trip.trip.search_to"
+   }
+  },
+  {
+   "submit": {
+    "run_id": "$ref:trip.run_id",
+    "booked": true,
+    "refusal": "NONE",
+    "offer_id": "20261213-05",
+    "svp_approval_required": false
+   }
+  }
+ ],
+ "expect": {
+  "valid": true,
+  "score": 1.0,
+  "failed": []
+ }
+}

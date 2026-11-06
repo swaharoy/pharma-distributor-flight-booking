@@ -1,0 +1,49 @@
+{
+ "note": "Booked 28 days ahead but flagged as needing Senior VP approval.",
+ "kind": "wrong",
+ "task": "pharma-distributor-flight-booking",
+ "today": "2026-11-05",
+ "request": {
+  "traveller_name": "Maya Chen",
+  "origin": "ORD",
+  "destination": "BOS",
+  "arrival_date": "2026-12-03",
+  "arrive_from": "13:00",
+  "arrive_to": "17:00",
+  "svp_approval": false
+ },
+ "steps": [
+  {
+   "tool": "get_trip",
+   "arguments": "$request",
+   "save_as": "trip"
+  },
+  {
+   "tool": "search_flights",
+   "save_as": "search",
+   "arguments": {
+    "run_id": "$ref:trip.run_id",
+    "origin": "$ref:trip.trip.origin.code",
+    "destination": "$ref:trip.trip.destination.code",
+    "date_from": "$ref:trip.trip.search_from",
+    "date_to": "$ref:trip.trip.search_to"
+   }
+  },
+  {
+   "submit": {
+    "run_id": "$ref:trip.run_id",
+    "booked": true,
+    "refusal": "NONE",
+    "offer_id": "20261203-01",
+    "svp_approval_required": true
+   }
+  }
+ ],
+ "expect": {
+  "valid": false,
+  "score": 0.0,
+  "failed": [
+   "approval"
+  ]
+ }
+}

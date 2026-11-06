@@ -1,0 +1,35 @@
+.trip-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0.5rem 0 0;
+}
+
+.trip-facts dt {
+  color: var(--muted, #667);
+}
+
+.trip-facts dd {
+  margin: 0;
+}
+
+.booking,
+.requirements {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.requirements h4 {
+  margin: 0.5rem 0 0;
+}
+
+.requirements .rules {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.requirements .example {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid var(--border, #ccd);
+}

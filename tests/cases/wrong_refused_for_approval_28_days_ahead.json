@@ -1,0 +1,38 @@
+{
+ "note": "Refused for lack of approval, 28 days ahead.",
+ "kind": "wrong",
+ "task": "pharma-distributor-flight-booking",
+ "today": "2026-11-05",
+ "request": {
+  "traveller_name": "Maya Chen",
+  "origin": "ORD",
+  "destination": "BOS",
+  "arrival_date": "2026-12-03",
+  "arrive_from": "13:00",
+  "arrive_to": "17:00",
+  "svp_approval": false
+ },
+ "steps": [
+  {
+   "tool": "get_trip",
+   "arguments": "$request",
+   "save_as": "trip"
+  },
+  {
+   "submit": {
+    "run_id": "$ref:trip.run_id",
+    "booked": false,
+    "refusal": "NO_SVP_APPROVAL",
+    "offer_id": "",
+    "svp_approval_required": false
+   }
+  }
+ ],
+ "expect": {
+  "valid": false,
+  "score": 0.0,
+  "failed": [
+   "refusal"
+  ]
+ }
+}

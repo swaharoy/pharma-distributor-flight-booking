@@ -1,0 +1,11 @@
+_ > nanoagent.plugin.v0001.ProductConfig:
+tagline: "Book the lowest fare that lands when the meeting needs you"
+summary: "Describe a trip in plain words (where from, where to, and when you need to land) and an agent books a one-way flight for a pharmaceutical distributor's traveller, as of today, the way the company's travel agency would under a corporate travel policy based on McKesson's 2006 Corporate Travel Policy: Senior Vice President approval for tickets within 7 days, any flight landing within 90 minutes of the requested arrival window, and the lowest fare among them whatever its restrictions. Real airports and airline names; simulated fares and schedules. A deterministic verifier checks every booking against the policy's rules."
+highlights:
+  - "No codes to learn: say who travels, from where to where, and when you need to arrive; the plugin can list what it needs"
+  - "The verdict lists each policy rule with what was expected and what was booked"
+  - "Real airports and airlines on plausible routes, with simulated fares, so the same request on the same day always gets the same offers and verdict"
+steps:
+  - "Ask what information is needed to book a flight"
+  - "Describe your trip: traveller, airports, arrival date and window, and whether a Senior Vice President has approved it"
+  - "Read the booking and the verifier's checks on the result card"

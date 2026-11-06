@@ -1,0 +1,67 @@
+{
+ "note": "Arriving 6 days after booking without approval: refused.",
+ "kind": "boundary",
+ "task": "pharma-distributor-flight-booking",
+ "today": "2026-11-05",
+ "request": {
+  "traveller_name": "Maya Chen",
+  "origin": "ORD",
+  "destination": "BOS",
+  "arrival_date": "2026-11-11",
+  "arrive_from": "13:00",
+  "arrive_to": "17:00",
+  "svp_approval": false
+ },
+ "steps": [
+  {
+   "tool": "get_trip",
+   "arguments": "$request",
+   "save_as": "trip"
+  },
+  {
+   "submit": {
+    "run_id": "$ref:trip.run_id",
+    "booked": false,
+    "refusal": "NO_SVP_APPROVAL",
+    "offer_id": "",
+    "svp_approval_required": true
+   }
+  }
+ ],
+ "world": {
+  "route": [
+   "ORD",
+   "BOS"
+  ],
+  "offers": {
+   "2026-11-11": [
+    {
+     "offer_id": "20261111-01",
+     "carrier": "United Airlines",
+     "cabin": "ECONOMY",
+     "fare_cents": 20000,
+     "refundable": false,
+     "change_fee_cents": 0,
+     "total_air_minutes": 125,
+     "depart_local": "2026-11-11 11:55",
+     "arrive_local": "2026-11-11 15:00",
+     "segments": [
+      {
+       "origin": "ORD",
+       "destination": "BOS",
+       "flight_number": "UA 100",
+       "depart": "2026-11-11 17:55",
+       "arrive": "2026-11-11 20:00",
+       "air_minutes": 125
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "expect": {
+  "valid": true,
+  "score": 1.0,
+  "failed": []
+ }
+}
